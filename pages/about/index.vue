@@ -1,28 +1,15 @@
 <template>
   <section class="container">
     <div>
-      <logo />
       <h1 class="title">
         vue-wp
       </h1>
       <h2 class="subtitle">
-        My wicked Nuxt.js project
+        about page
       </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
       <div>
-        <nuxt-link to="/about">
-          About page
+        <nuxt-link to="/">
+          Home page
         </nuxt-link>
       </div>
     </div>
@@ -30,11 +17,35 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
 export default {
-  components: {
-    Logo
+  async asyncData({ $axios }) {
+    const response = await $axios.$get(
+      'https://api.coindesk.com/v1/bpi/currentprice.json'
+    )
+    return { description: response.disclaimer }
+  },
+  data() {
+    return {
+      title: 'About page'
+    }
+  },
+  mounted() {
+    // axios
+    //   .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    //   .then(response => (this.info = response.disclaimer))
+  },
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.description
+        }
+      ]
+    }
   }
 }
 </script>
